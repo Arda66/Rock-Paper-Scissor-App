@@ -31,19 +31,19 @@ const MainMenu = ({navigation}) => {
             style={styles.button}
             onPress={() => {
               if (User1Name.trim().length > 0 && User2Name.trim().length > 0) {
+                Keyboard.dismiss();
                 navigation.navigate('Game', {
                   FirstUserName: User1Name,
                   SecondUserName: User2Name,
                 });
                 setUser1Name('');
                 setUser2Name('');
-              } else {
-                alert('Name can bot be null or empty!');
-              }
+              } else alert('Name can bot be null or empty!');
             }}>
             <Text style={styles.buttonText}>Play</Text>
           </TouchableOpacity>
           <TextInput
+            autoCapitalize="sentences"
             style={styles.input}
             placeholder="Enter First User's Name"
             placeholderTextColor={'gray'}
@@ -51,6 +51,7 @@ const MainMenu = ({navigation}) => {
             onChangeText={text => setUser1Name(text)}
           />
           <TextInput
+            autoCapitalize="sentences"
             style={styles.input}
             placeholder="Enter Second User's Name"
             placeholderTextColor={'gray'}

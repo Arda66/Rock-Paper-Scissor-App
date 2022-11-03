@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ToastAndroid,
 } from 'react-native';
 import React from 'react';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -33,6 +32,43 @@ const Game = ({navigation, route}) => {
     setis2Disabled(true); // disable the buttons
   };
 
+  const Winner = () => {
+    if (User1Score === 2) {
+      Alert.alert('Game Over', `${FirstUserName} Won The Game!`, [
+        {
+          text: 'Play Again',
+          onPress: () => {
+            setUser1Score(0);
+            setUser2Score(0);
+            Restart();
+          },
+        },
+        {
+          text: 'Go To Main Menu',
+          onPress: () => {
+            navigation.navigate('MainMenu');
+          },
+        },
+      ]);
+    } else if (User2Score === 2) {
+      Alert.alert('Game Over', `${SecondUserName} Won The Game!`, [
+        {
+          text: 'Play Again',
+          onPress: () => {
+            setUser1Score(0);
+            setUser2Score(0);
+            Restart();
+          },
+        },
+        {
+          text: 'Go To Main Menu',
+          onPress: () => {
+            navigation.navigate('MainMenu');
+          },
+        },
+      ]);
+    }
+  };
   const Restart = () => {
     setUser1Selection('');
     setUser2Selection('');
@@ -40,7 +76,6 @@ const Game = ({navigation, route}) => {
     setUser2_isSelected(false);
     setis1Disabled(false);
     setis2Disabled(false);
-    ToastAndroid.show('Game Restarted', ToastAndroid.SHORT);
   };
   const AfterSelection = () => {
     if (User1_isSelected && User2_isSelected) {
@@ -60,37 +95,41 @@ const Game = ({navigation, route}) => {
         (User1Selection === 'Scissor' && User2Selection === 'Paper') ||
         (User1Selection === 'Paper' && User2Selection === 'Rock')
       ) {
-        setUser1Score(User1Score + 1);
-        Alert.alert(
-          FirstUserName + ' Wins',
-          `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
-          [
-            {
-              text: 'OK',
-              onPress: () => Restart(),
-            },
-          ],
-        );
+        if (User1Score === 2) Winner();
+        else {
+          setUser1Score(User1Score + 1);
+          Alert.alert(
+            FirstUserName + ' Wins',
+            `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
+            [
+              {
+                text: 'OK',
+                onPress: () => Restart(),
+              },
+            ],
+          );
+        }
       } else {
-        setUser2Score(User2Score + 1);
-        Alert.alert(
-          SecondUserName + ' Wins',
-          `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
-          [
-            {
-              text: 'OK',
-              onPress: () => Restart(),
-            },
-          ],
-        );
+        if (User2Score === 2) Winner();
+        else {
+          setUser2Score(User2Score + 1);
+          Alert.alert(
+            SecondUserName + ' Wins',
+            `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
+            [
+              {
+                text: 'OK',
+                onPress: () => Restart(),
+              },
+            ],
+          );
+        }
       }
-    } else {
-      alert('Please select both users!');
-    }
+    } else alert('Please select both users!');
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#D4DFE9'}}>
       {/* User1 Selection Area */}
       <View style={styles.topContainer}>
         <Text style={styles.Title}>{FirstUserName}'s Selection</Text>
@@ -99,21 +138,21 @@ const Game = ({navigation, route}) => {
           <TouchableOpacity
             onPress={() => User1Select('Rock')}
             disabled={is1Disabled}
-            style={[styles.Button1, {opacity: User1_isSelected ? 0.5 : 1}]}>
+            style={[styles.Button1, {opacity: User1_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Rock</Text>
             <FontAwesome5Icon name="hand-rock" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => User1Select('Paper')}
             disabled={is1Disabled}
-            style={[styles.Button1, {opacity: User1_isSelected ? 0.5 : 1}]}>
+            style={[styles.Button1, {opacity: User1_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Paper</Text>
             <FontAwesome5Icon name="hand-paper" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => User1Select('Scissor')}
             disabled={is1Disabled}
-            style={[styles.Button1, {opacity: User1_isSelected ? 0.5 : 1}]}>
+            style={[styles.Button1, {opacity: User1_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Scissor</Text>
             <FontAwesome5Icon name="hand-scissors" size={30} color={'black'} />
           </TouchableOpacity>
@@ -135,21 +174,21 @@ const Game = ({navigation, route}) => {
           <TouchableOpacity
             onPress={() => User2Select('Rock')}
             disabled={is2Disabled}
-            style={[styles.Button2, {opacity: User2_isSelected ? 0.5 : 1}]}>
+            style={[styles.Button2, {opacity: User2_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Rock</Text>
             <FontAwesome5Icon name="hand-rock" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => User2Select('Paper')}
             disabled={is2Disabled}
-            style={[styles.Button2, {opacity: User2_isSelected ? 0.5 : 1}]}>
+            style={[styles.Button2, {opacity: User2_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Paper</Text>
             <FontAwesome5Icon name="hand-paper" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => User2Select('Scissor')}
             disabled={is2Disabled}
-            style={[styles.Button2, {opacity: User2_isSelected ? 0.5 : 1}]}>
+            style={[styles.Button2, {opacity: User2_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Scissor</Text>
             <FontAwesome5Icon name="hand-scissors" size={30} color={'black'} />
           </TouchableOpacity>
