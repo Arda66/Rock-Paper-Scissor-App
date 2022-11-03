@@ -9,37 +9,42 @@ import {
 import {React, useState} from 'react';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-const Game = ({navigation, route}) => {
-  const {FirstUserName, SecondUserName} = route.params;
-  const [User1Selection, setUser1Selection] = useState('');
-  const [User2Selection, setUser2Selection] = useState('');
+const Bot = ({navigation, route}) => {
+  const {Username} = route.params;
+  const [UserSelection, setUserSelection] = useState('');
+  const [BotSelection, setBotSelection] = useState('');
   const [is1Disabled, setis1Disabled] = useState(false);
-  const [is2Disabled, setis2Disabled] = useState(false);
-  const [User1_isSelected, setUser1_isSelected] = useState(false);
-  const [User2_isSelected, setUser2_isSelected] = useState(false);
-  const [User1Score, setUser1Score] = useState(0);
-  const [User2Score, setUser2Score] = useState(0);
+  const [User_isSelected, setUser_isSelected] = useState(false);
+  const [Bot_isSelected, setBot_isSelected] = useState(false);
+  const [UserScore, setUserScore] = useState(0);
+  const [BotScore, setBotScore] = useState(0);
 
-  const User1Select = selection => {
-    setUser1Selection(selection);
-    setUser1_isSelected(true);
-    setis1Disabled(true); // disable the buttons
+  const UserSelect = selection => {
+    BotSelect();
+    setUserSelection(selection);
+    setUser_isSelected(true);
   };
-
-  const User2Select = selection => {
-    setUser2Selection(selection);
-    setUser2_isSelected(true);
-    setis2Disabled(true); // disable the buttons
+  function randomInt(min, max) {
+    // min and max included
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+  const BotSelect = () => {
+    let selection = randomInt(1, 3);
+    if (selection == 1) selection = 'Rock';
+    else if (selection == 2) selection = 'Paper';
+    else selection = 'Scissor';
+    setBotSelection(selection);
+    setBot_isSelected(true);
   };
 
   const Winner = () => {
-    if (User1Score === 2) {
-      Alert.alert('Game Over', `${FirstUserName} Won The Game!`, [
+    if (UserScore === 2) {
+      Alert.alert('Game Over', `${Username} Won The Game!`, [
         {
           text: 'Play Again',
           onPress: () => {
-            setUser1Score(0);
-            setUser2Score(0);
+            setUserScore(0);
+            setBotScore(0);
             Restart();
           },
         },
@@ -50,13 +55,13 @@ const Game = ({navigation, route}) => {
           },
         },
       ]);
-    } else if (User2Score === 2) {
-      Alert.alert('Game Over', `${SecondUserName} Won The Game!`, [
+    } else if (BotScore === 2) {
+      Alert.alert('Game Over', `Computer Won The Game!`, [
         {
           text: 'Play Again',
           onPress: () => {
-            setUser1Score(0);
-            setUser2Score(0);
+            setUserScore(0);
+            setBotScore(0);
             Restart();
           },
         },
@@ -70,19 +75,18 @@ const Game = ({navigation, route}) => {
     }
   };
   const Restart = () => {
-    setUser1Selection('');
-    setUser2Selection('');
-    setUser1_isSelected(false);
-    setUser2_isSelected(false);
+    setUserSelection('');
+    setBotSelection('');
+    setUser_isSelected(false);
+    setBot_isSelected(false);
     setis1Disabled(false);
-    setis2Disabled(false);
   };
   const AfterSelection = () => {
-    if (User1_isSelected && User2_isSelected) {
-      if (User1Selection === User2Selection) {
+    if (User_isSelected) {
+      if (UserSelection === BotSelection) {
         Alert.alert(
           'Draw',
-          `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
+          `${Username}'s Selection : ${UserSelection}\nComputer's Selection : ${BotSelection}`,
           [
             {
               text: 'OK',
@@ -91,16 +95,16 @@ const Game = ({navigation, route}) => {
           ],
         );
       } else if (
-        (User1Selection === 'Rock' && User2Selection === 'Scissor') ||
-        (User1Selection === 'Scissor' && User2Selection === 'Paper') ||
-        (User1Selection === 'Paper' && User2Selection === 'Rock')
+        (UserSelection === 'Rock' && BotSelection === 'Scissor') ||
+        (UserSelection === 'Scissor' && BotSelection === 'Paper') ||
+        (UserSelection === 'Paper' && BotSelection === 'Rock')
       ) {
-        if (User1Score === 2) Winner();
+        if (UserScore === 2) Winner();
         else {
-          setUser1Score(User1Score + 1);
+          setUserScore(UserScore + 1);
           Alert.alert(
-            FirstUserName + ' Wins',
-            `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
+            Username + ' Wins',
+            `${Username}'s Selection : ${UserSelection}\nComputer's Selection : ${BotSelection}`,
             [
               {
                 text: 'OK',
@@ -110,12 +114,12 @@ const Game = ({navigation, route}) => {
           );
         }
       } else {
-        if (User2Score === 2) Winner();
+        if (BotScore === 2) Winner();
         else {
-          setUser2Score(User2Score + 1);
+          setBotScore(BotScore + 1);
           Alert.alert(
-            SecondUserName + ' Wins',
-            `${FirstUserName}'s Selection : ${User1Selection}\n${SecondUserName}'s Selection : ${User2Selection}`,
+            'Computer Wins',
+            `${Username}'s Selection : ${UserSelection}\nComputer's Selection : ${BotSelection}`,
             [
               {
                 text: 'OK',
@@ -132,32 +136,32 @@ const Game = ({navigation, route}) => {
     <SafeAreaView style={styles.container}>
       {/* User1 Selection Area */}
       <View style={styles.topContainer}>
-        <Text style={styles.Title}>{FirstUserName}'s Selection</Text>
-        <Text style={styles.Score}>(Score : {User1Score})</Text>
+        <Text style={styles.Title}>{Username}'s Selection</Text>
+        <Text style={styles.Score}>(Score : {UserScore})</Text>
         <View style={styles.ButtonWrapper}>
           <TouchableOpacity
-            onPress={() => User1Select('Rock')}
+            onPress={() => UserSelect('Rock')}
             disabled={is1Disabled}
-            style={[styles.Button1, {opacity: User1_isSelected ? 0.4 : 1}]}>
+            style={[styles.Button1, {opacity: User_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Rock</Text>
             <FontAwesome5Icon name="hand-rock" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => User1Select('Paper')}
+            onPress={() => UserSelect('Paper')}
             disabled={is1Disabled}
-            style={[styles.Button1, {opacity: User1_isSelected ? 0.4 : 1}]}>
+            style={[styles.Button1, {opacity: User_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Paper</Text>
             <FontAwesome5Icon name="hand-paper" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => User1Select('Scissor')}
+            onPress={() => UserSelect('Scissor')}
             disabled={is1Disabled}
-            style={[styles.Button1, {opacity: User1_isSelected ? 0.4 : 1}]}>
+            style={[styles.Button1, {opacity: User_isSelected ? 0.4 : 1}]}>
             <Text style={styles.buttonText}>Scissor</Text>
             <FontAwesome5Icon name="hand-scissors" size={30} color={'black'} />
           </TouchableOpacity>
         </View>
-        <View style={{opacity: User1_isSelected ? 1 : 0}}>
+        <View style={{opacity: User_isSelected ? 1 : 0}}>
           <Ionicons
             style={{alignSelf: 'center', marginTop: 20}}
             name="checkmark-sharp"
@@ -168,32 +172,29 @@ const Game = ({navigation, route}) => {
       </View>
       {/* User 2 Selection Area */}
       <View style={styles.bottomContainer}>
-        <Text style={styles.Title}>{SecondUserName}'s Selection</Text>
-        <Text style={styles.Score}>(Score : {User2Score})</Text>
+        <Text style={styles.Title}>Computer's Selection</Text>
+        <Text style={styles.Score}>(Score : {BotScore})</Text>
         <View style={styles.ButtonWrapper}>
           <TouchableOpacity
-            onPress={() => User2Select('Rock')}
-            disabled={is2Disabled}
-            style={[styles.Button2, {opacity: User2_isSelected ? 0.4 : 1}]}>
+            disabled={true}
+            style={[styles.Button2, {opacity: 0.4}]}>
             <Text style={styles.buttonText}>Rock</Text>
             <FontAwesome5Icon name="hand-rock" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => User2Select('Paper')}
-            disabled={is2Disabled}
-            style={[styles.Button2, {opacity: User2_isSelected ? 0.4 : 1}]}>
+            disabled={true}
+            style={[styles.Button2, {opacity: 0.4}]}>
             <Text style={styles.buttonText}>Paper</Text>
             <FontAwesome5Icon name="hand-paper" size={30} color={'black'} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => User2Select('Scissor')}
-            disabled={is2Disabled}
-            style={[styles.Button2, {opacity: User2_isSelected ? 0.4 : 1}]}>
+            disabled={true}
+            style={[styles.Button2, {opacity: 0.4}]}>
             <Text style={styles.buttonText}>Scissor</Text>
             <FontAwesome5Icon name="hand-scissors" size={30} color={'black'} />
           </TouchableOpacity>
         </View>
-        <View style={{opacity: User2_isSelected ? 1 : 0}}>
+        <View style={{opacity: UserSelection ? 1 : 0}}>
           <Ionicons
             style={{alignSelf: 'center', marginTop: 20}}
             name="checkmark-sharp"
@@ -218,7 +219,7 @@ const Game = ({navigation, route}) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('MainMenu'), setUser1Score(0), setUser2Score(0);
+            navigation.navigate('MainMenu'), setUserScore(0), setBotScore(0);
           }}
           style={[
             styles.Button1,
@@ -316,4 +317,4 @@ const styles = StyleSheet.create({
     shadowRadius: 16.0,
   },
 });
-export default Game;
+export default Bot;
