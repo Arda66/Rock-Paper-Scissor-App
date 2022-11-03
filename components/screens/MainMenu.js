@@ -35,6 +35,8 @@ const MainMenu = ({navigation}) => {
             <TouchableOpacity
               style={[styles.button, {borderWidth: pvpSelected ? 2 : 0}]}
               onPress={() => {
+                setUser1Name('');
+                setUser2Name('');
                 setBotSelected(false);
                 setpvpSelected(true);
               }}>
@@ -43,6 +45,8 @@ const MainMenu = ({navigation}) => {
             <TouchableOpacity
               style={[styles.button, {borderWidth: BotSelected ? 2 : 0}]}
               onPress={() => {
+                setUser1Name('');
+                setUser2Name('');
                 setpvpSelected(false);
                 setBotSelected(true);
               }}>
@@ -80,20 +84,44 @@ const MainMenu = ({navigation}) => {
                     });
                     setUser1Name('');
                     setUser2Name('');
-                  } else alert('UserName can not be null or empty!');
+                  } else {
+                    setUser1Name('');
+                    setUser2Name('');
+                    alert('UserName can not be null or empty!');
+                  }
                 } else {
                   if (
                     User1Name.trim().length > 0 &&
                     User2Name.trim().length > 0
                   ) {
-                    Keyboard.dismiss();
-                    navigation.navigate('Game', {
-                      FirstUserName: User1Name,
-                      SecondUserName: User2Name,
-                    });
+                    if (User1Name.toLowerCase() === User2Name.toLowerCase()) {
+                      Alert.alert(
+                        'Error',
+                        'Both Users can not have same name!',
+                        [
+                          {
+                            text: 'Ok',
+                            onPress: () => {
+                              setUser1Name('');
+                              setUser2Name('');
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      Keyboard.dismiss();
+                      navigation.navigate('Game', {
+                        FirstUserName: User1Name,
+                        SecondUserName: User2Name,
+                      });
+                      setUser1Name('');
+                      setUser2Name('');
+                    }
+                  } else {
                     setUser1Name('');
                     setUser2Name('');
-                  } else alert('Player names can not be null or empty!');
+                    alert('Player names can not be null or empty!');
+                  }
                 }
               } else alert('Please Select one of the options!');
             }}>
@@ -139,7 +167,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
-    borderColor: 'red',
+    borderColor: 'yellow',
   },
   buttonText: {
     fontWeight: 'bold',

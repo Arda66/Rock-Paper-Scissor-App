@@ -15,7 +15,6 @@ const Bot = ({navigation, route}) => {
   const [BotSelection, setBotSelection] = useState('');
   const [is1Disabled, setis1Disabled] = useState(false);
   const [User_isSelected, setUser_isSelected] = useState(false);
-  const [Bot_isSelected, setBot_isSelected] = useState(false);
   const [UserScore, setUserScore] = useState(0);
   const [BotScore, setBotScore] = useState(0);
 
@@ -34,7 +33,6 @@ const Bot = ({navigation, route}) => {
     else if (selection == 2) selection = 'Paper';
     else selection = 'Scissor';
     setBotSelection(selection);
-    setBot_isSelected(true);
   };
 
   const Winner = () => {
@@ -78,7 +76,6 @@ const Bot = ({navigation, route}) => {
     setUserSelection('');
     setBotSelection('');
     setUser_isSelected(false);
-    setBot_isSelected(false);
     setis1Disabled(false);
   };
   const AfterSelection = () => {
